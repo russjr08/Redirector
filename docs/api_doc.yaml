@@ -55,6 +55,25 @@ paths:
                   value:
                     error: You are not authorized to use this endpoint
                     errorCode: INVALID_AUTH
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  errorCode:
+                    type: string
+                required:
+                  - error
+                  - errorCode
+              examples:
+                Internal Server Error:
+                  value:
+                    error: The server failed to process your request
+                    errorCode: INTERNAL_SERVER_ERROR
       description: Creates a new Redirect
       requestBody:
         content:
@@ -321,4 +340,3 @@ components:
       in: header
 security:
   - token: []
-
