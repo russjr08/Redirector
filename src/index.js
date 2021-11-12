@@ -1,17 +1,23 @@
-var express = require("express")
-var app = express()
+let express = require('express');
+let mongoose = require('mongoose');
 
-app.listen(9000, () => {
-    console.log("Redirector server is running on port 9000!");
-    console.log(`Using the following database credentials ${process.env.MONGO_USERNAME},
-     ${process.env.MONGO_PASSWORD}, ${process.env.MONGO_DATABASE}`);
-})
+let app = express();
 
-app.get("/api/test", (req, res, next) => {
-    logRequest(req);
-    res.json({"message": "You have successfully accessed Redirector!", "status": "OK"});
+app.use(express.json());
+
+
+app.listen(process.env.APP_PORT, async () => {
+    let { MONGO_USERNAME, MONGO_PASSWORD, MONGO_DATABASE } = process.env || {};
+
+    console.log(`Redirector server is running on port ${process.env.APP_PORT}!`);
+    await mongoose.connect(`mongodb://localhost:27017/${MONGO_DATABASE}`);
 });
 
-function logRequest(req) {
-    console.log(`Incoming request to ${req.url} from ${req.ip}`);
-}
+let db = mongoose.connection;
+
+db.on('error', console.error.bind(console, "MongoDB connection error: "));
+db.on('connected', () => { console.log("Database successfully connected!" )});
+
+var Redirect = mongoose.model("Redirect", require('./RedirectSchema'));
+
+app.use(require('./api')(db, Redirect));
