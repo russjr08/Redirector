@@ -24,6 +24,8 @@ services:
       - MONGO_USERNAME=accessor
       - MONGO_PASSWORD=insert-secure-password
       - MONGO_DATABASE=redirector
+      - APP_PORT=9000
+      - API_KEY=enter-your-key-here
 
     # Uncomment the next line to use a non-root user for all processes.
     # user: node
