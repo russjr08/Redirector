@@ -18,10 +18,17 @@ paths:
               schema:
                 type: object
                 properties:
-                  redirect_from:
+                  message:
                     type: string
-                  redirect_to:
-                    type: string
+                  redirect:
+                    type: object
+                    properties:
+                      redirect_from:
+                        type: string
+                      redirect_to:
+                        type: string
+                      _id:
+                        $ref: '#/components/schemas/Redirect'
               examples: {}
         '400':
           description: Invalid parameters received
