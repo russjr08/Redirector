@@ -27,12 +27,12 @@ Redirector is available as a Docker image on my repository, as the following:
 - `docker-registry.omnicron.dev/redirector:latest`: This will get you the latest version of Redirector
 - `docker-registry.omnicron.dev/redirector:v1`: This will get you the latest version of Redirector from the v1 branch
 
-I recommend pairing this with the `.env` file from this repository, which has the environmental variables you need for the application. Then you can just pass `--env-file` to Docker, rather than listing all of the variables individually. However, you can list them individually if you wish!
+I recommend pairing this with the `.env.example` file from this repository, which has the environmental variables you need for the application. Then you can just pass `--env-file` to Docker, rather than listing all of the variables individually. However, you can list them individually if you wish!
 
 Run with something such as:
-`docker run --env-file ./.env -p 10000:9500 docker-registry.omnicron.dev/redirector:v1`
+`docker run --env-file ./.env.example -p 10000:9500 docker-registry.omnicron.dev/redirector:v1`
 
-This will make Redirector available on port 10000, connected to the database details specified in the `.env` file.
+This will make Redirector available on port 10000, connected to the database details specified in the `.env.example` file.
 
 ## Running (Docker Compose)
 Don't have an existing MongoDB server? Or do you just prefer to keep your services and it's dependencies coupled together? No problem! You can use the `docker-compose.yml` file from this repository as well, and then just simply use:
@@ -58,4 +58,4 @@ curl --request POST \
 
 Then head over to `http://ip-here:PORT/github` and you would be taken to https://github.com/russjr08
 
-For actual use of course, I would recommend putting Redirector behind a reverse proxy of your choice. Redirector doesn't require any special configuration on it's part if you choose to do this - though if you are going to serve it under a subfolder, be sure the `HOST_UNDER` environmental variable (see "Running (Node.js)" or `docker-compose.yml` or `.env`) gets set!
+For actual use of course, I would recommend putting Redirector behind a reverse proxy of your choice. Redirector doesn't require any special configuration on it's part if you choose to do this - though if you are going to serve it under a subfolder, be sure the `HOST_UNDER` environmental variable (see "Running (Node.js)" or `docker-compose.yml` or `.env.example`) gets set!
