@@ -1,0 +1,48 @@
+version: '3.7'
+
+networks:
+  redirector:
+    driver: bridge
+
+services:
+  app:
+    image: "docker-registry.omnicron.dev/redirector:v1" # Change this to `latest` for bleeding-edge builds
+
+    networks:
+      - redirector
+
+    ports:
+      - "9500:9500" # If you change the app port below, be sure to change the second value here!
+
+    environment:
+      - MONGO_USERNAME=accessor
+      - MONGO_PASSWORD=insert-secure-password
+      - MONGO_DATABASE=redirector
+      - MONGO_HOST=db
+      # - HOST_UNDER=/path # Optional: If you are running this behind a subfolder, uncomment this - do not add a trailing / at the end
+      - APP_PORT=9500 # If you change this, be sure to change the port mapping above!
+      - API_KEY=enter-your-key-here # Please do not leave this as the default...
+
+    links:
+      - "db:db"
+    depends_on:
+      - "db"
+
+    command: ["./wait-for-it.sh", "db:27017", "--", "node", "./src/index.js"] # This just _ensures_ that MongoDB has loaded before the app actually comes up
+
+  db:
+    networks:
+      - redirector
+    image: mongo:latest
+    restart: unless-stopped
+    volumes:
+      - mongodb-data:/data/db
+
+    # Be sure these match the vars set in the `app` service above
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: accessor
+      MONGO_INITDB_ROOT_PASSWORD: insert-secure-password
+      MONGO_INITDB_DATABASE: redirector
+
+volumes:
+  mongodb-data:
