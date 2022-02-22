@@ -61,7 +61,7 @@ module.exports = function(db,  Redirect) {
 
         console.log(`New redirect request received with ${redirect_from} // ${redirect_to}`);
 
-        var existingResults = await Redirect.find({ redirect_to });
+        var existingResults = await Redirect.find({ redirect_from });
 
         if(existingResults.length > 0) {
             res.status(400);
