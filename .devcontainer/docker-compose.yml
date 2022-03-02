@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # Update 'VARIANT' to pick an LTS version of Node.js: 16, 14, 12.
+        # Append -bullseye or -buster to pin to an OS version.
+        # Use -bullseye variants on local arm64/Apple Silicon.
+        VARIANT: 14-buster
+    volumes:
+      - ..:/workspace:cached
+    init: true
+
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+
+    # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
+    network_mode: service:db
+
+    environment:
+      - MONGO_USERNAME=accessor
+      - MONGO_PASSWORD=insert-secure-password
+      - MONGO_DATABASE=redirector
+      - MONGO_HOST=db
+      - HOST_UNDER=/to
+      - APP_PORT=9500
+      - API_KEY=enter-your-key-here
+
+    # Uncomment the next line to use a non-root user for all processes.
+    # user: node
+
+    # Use "forwardPorts" in **devcontainer.json** to forward an app port locally. 
+    # (Adding the "ports" property to this file will not forward from a Codespace.)
+
+  db:
+    image: mongo:latest
+    restart: unless-stopped
+    volumes:
+      - mongodb-data:/data/db
+
+    # Be sure these match the vars set in the `app` service
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: accessor
+      MONGO_INITDB_ROOT_PASSWORD: insert-secure-password
+      MONGO_INITDB_DATABASE: redirector
+
+    # Add "forwardPorts": ["27017"] to **devcontainer.json** to forward MongoDB locally.
+    # (Adding the "ports" property to this file will not forward from a Codespace.)
+
+volumes:
+  mongodb-data:
